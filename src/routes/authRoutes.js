@@ -1,8 +1,10 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const {users} = require('../db/fakeDB');
 const helpers = require('../utils/helpers');
+const connect = require('../db/connection');
 
 router.get('/list', (req,res)=>{
     try {
@@ -37,21 +39,23 @@ router.post('/genSalt',(req,res)=>{
 }
     */
 
-router.post('/', (req,res)=>{
+router.post('/', async (req,res)=>{
     try{
         const {usuario,password} = req.body;
+        const pool = await connect();
         if(usuario !== '' && password !=='' ){
-            const usuarioEncontrado = users.find(u => u.usuario===usuario);
-            if(!usuarioEncontrado){
+            //const usuarioEncontrado = users.find(u => u.usuario===usuario);
+            const usuarioEncontrado = await pool.query("SELECT * FROM usuarios where usuario=?",[usuario])
+            if(usuarioEncontrado[0].length===0){
                 res.status(401).json({status: false,message:'ERROR, Usuario inexistente o no vigente'});
             } else{
-                const hashedPass = helpers.encrypt(password,usuarioEncontrado.salt)===usuarioEncontrado.password;
-                console.log(helpers.genSalt());
+                const hashedPass = helpers.encrypt(password,usuarioEncontrado[0][0].salt)===usuarioEncontrado[0][0].password;
+                //console.log(helpers.genSalt());
                 if(!hashedPass){
                     res.status(401).json({status: false,message:'ERROR, Usuario inexistente o no vigente'});
                 }
                 else{
-                    bcryptHashedPass = helpers.bcryptHash(usuarioEncontrado.password);
+                    bcryptHashedPass = helpers.bcryptHash(usuarioEncontrado[0][0].password);
                     const token = jwt.sign({
                         usuario,
                         hashedPass: bcryptHashedPass
