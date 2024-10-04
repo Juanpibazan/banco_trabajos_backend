@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const authRoutes = require('./routes/authRoutes');
+const vacantsRoutes = require('./routes/vacantsRoutes');
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.urlencoded({extended:false}));
 app.set('port', process.env.PORT || 4000);
 
 app.use('/Autenticar_u', authRoutes);
+app.use('/Registro_job', vacantsRoutes);
 
 app.get('/', (req,res)=>{
     res.send('Hello World!');

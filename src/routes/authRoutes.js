@@ -45,7 +45,7 @@ router.post('/', async (req,res)=>{
         const pool = await connect();
         if(usuario !== '' && password !=='' ){
             //const usuarioEncontrado = users.find(u => u.usuario===usuario);
-            const usuarioEncontrado = await pool.query("SELECT * FROM usuarios where usuario=?",[usuario])
+            const usuarioEncontrado = await pool.query("SELECT * FROM usuarios where usuario=?;",[usuario])
             if(usuarioEncontrado[0].length===0){
                 res.status(401).json({status: false,message:'ERROR, Usuario inexistente o no vigente'});
             } else{
@@ -59,7 +59,7 @@ router.post('/', async (req,res)=>{
                     const token = jwt.sign({
                         usuario,
                         hashedPass: bcryptHashedPass
-                    },'MY_SECRET',{expiresIn:'15m'});
+                    },process.env.JWT_SECRET_KEY,{expiresIn:'15m'});
                     res.status(200).json({
                         status: true,
                         message:'Credenciales correctas',
