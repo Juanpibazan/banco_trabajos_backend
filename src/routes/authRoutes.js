@@ -58,6 +58,16 @@ router.post('/genSalt',(req,res)=>{
  *          content:
  *              application/json:
  *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          usuario:
+ *                              type: string
+ *                              description: Usuario
+ *                              required: true
+ *                          password:
+ *                              type: string
+ *                              description: Contraseña
+ *                              required: true
  *      responses:
  *          200:
  *              description: Un mensaje confirmando "Credenciales correctas" y un token temporal.
