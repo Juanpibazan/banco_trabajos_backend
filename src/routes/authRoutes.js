@@ -39,6 +39,81 @@ router.post('/genSalt',(req,res)=>{
 }
     */
 
+
+/**
+ * @swagger
+ * tags:
+ *  name: Autenticación/Registro
+ *  description: Autenticacion y Registro.
+ */
+
+/**
+ * @swagger
+ * /Autenticar_u/:
+ *  post:
+ *      summary: Autentica al usuario, proporcionandole un token temporal que expira a los 15 minutos.
+ *      tags: [Autenticación/Registro]
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *      responses:
+ *          200:
+ *              description: Un mensaje confirmando "Credenciales correctas" y un token temporal.
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              status:
+ *                                  type: boolean
+ *                                  description: true si la solicitud fue exitosa, sino false.
+ *                              message:
+ *                                  type: string
+ *                                  description: Mensaje de respuesta.
+ *                              token:
+ *                                  type: string
+ *                                  description: JSON Web Token generado a partir de una autenticación exitosa. Expira después de 15 min.
+ *          400:
+ *              description: Un mensaje señalando que las credenciales están vacías.
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              status:
+ *                                  type: boolean
+ *                                  description: true si la solicitud fue exitosa, sino false.
+ *                              message:
+ *                                  type: string
+ *                                  description: Mensaje de respuesta.
+ *          401:
+ *              description: Un mensaje señalando que el usuario es inexistente o no vigente.
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              status:
+ *                                  type: boolean
+ *                                  description: true si la solicitud fue exitosa, sino false.
+ *                              message:
+ *                                  type: string
+ *                                  description: Mensaje de respuesta.
+ *          500:
+ *              description: Un mensaje señalando el error que aconteció.
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              message:
+ *                                  type: string
+ *                                  description: Mensaje de respuesta.
+ * 
+ */
+
 router.post('/', async (req,res)=>{
     try{
         const {usuario,password} = req.body;
@@ -68,7 +143,7 @@ router.post('/', async (req,res)=>{
                 }
             }
         } else {
-            res.status(403).json({
+            res.status(400).json({
                 message: 'Usuario o contraseña vacios'
             });
         }
