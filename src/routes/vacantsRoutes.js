@@ -59,6 +59,11 @@ const connect = require('../db/connection');
  *              formacion:
  *                  type: integer
  *                  description: ID de la formación requerida para la vacante. Referirse a la tabla 'formaciones'.
+ *  securitySchemes:
+ *      bearerAuth:
+ *          type: http
+ *          scheme: bearer
+ *          bearerFormat: JWT
  * 
  */
 
@@ -73,6 +78,8 @@ const connect = require('../db/connection');
  * @swagger
  * /Registro_job/:
  *  post:
+ *      security:
+ *          - bearerAuth: []
  *      summary: Registra una vacante en la base de datos
  *      tags: [Vacantes]
  *      requestBody:
