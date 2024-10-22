@@ -154,6 +154,58 @@ const connect = require('../db/connection');
  *                              message:
  *                                  type: string
  *                                  description: Mensaje señalando el error.
+ * 
+ * 
+ * @swagger
+ * /Registro_job/list/:
+ *  get:
+ *      security:
+ *          - bearerAuth: []
+ *      summary: Muestra la lista completa de vacantes.
+ *      tags: [Vacantes]
+ *      responses:
+ *          200:
+ *              description: Se muestra la lista completa de vacantes.
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              status:
+ *                                  type: boolean
+ *                                  description: true si la solicitud fue exitosa, sino false.
+ *                              message:
+ *                                  type: string
+ *                                  description: Mensaje confirmando el registro exitoso de la vacante.
+ *                              data:
+ *                                  type: array
+ *                                  description: Un arreglo con todas las vacantes presentes en la base de datos.
+ *          404:
+ *              description: Algo salió mal.
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              status:
+ *                                  type: boolean
+ *                                  description: true si la solicitud fue exitosa, sino false.
+ *                              message:
+ *                                  type: string
+ *                                  description: Lista de vacantes vacía.
+ *          500:
+ *              description: Algo salió mal.
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              status:
+ *                                  type: boolean
+ *                                  description: true si la solicitud fue exitosa, sino false.
+ *                              message:
+ *                                  type: string
+ *                                  description: Mensaje señalando el error.
  */
 
 const verifyToken = (req,res,next)=>{
@@ -211,6 +263,32 @@ router.post('/', verifyToken, async (req,res)=>{
             })
         }
 
+    } catch(e){
+        res.status(500).json({
+            status: false,
+            message: `ERROR: ${e}`
+        });
+    }
+
+});
+
+router.get('/list',verifyToken, async (req,res)=>{
+    try {
+        const pool = await connect();
+        const response = await pool.query("SELECT * FROM vacantes;");
+        if(response[0].length===0){
+            res.status(404).json({
+                status: false,
+                message: 'Lista de vacantes vacía'
+            });
+        }
+        else{
+            res.status(200).json({
+                status: true,
+                message: `${response[0].length} vacantes existentes actualmente`,
+                data: response[0]
+            });
+        }
     } catch(e){
         res.status(500).json({
             status: false,
